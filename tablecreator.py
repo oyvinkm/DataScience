@@ -24,30 +24,31 @@ for i in range (len(metaList)):
     metaDict[metaList[i]] = i
 
 
-typedict_1 = df.type.drop_duplicates().to_dict()
-domaindict_1 = df.domain.drop_duplicates().to_dict()
-scrapeDict_1 = df.scraped_at.drop_duplicates().to_dict()
-insertDict_1 = df.inserted_at.drop_duplicates().to_dict()
-updatedDict_1 = df.updated_at.drop_duplicates().to_dict()
+typedict = df.type.drop_duplicates().to_dict()
+domaindict = df.domain.drop_duplicates().to_dict()
+scrapeDict = df.scraped_at.drop_duplicates().to_dict()
+insertDict = df.inserted_at.drop_duplicates().to_dict()
+updatedDict = df.updated_at.drop_duplicates().to_dict()
 
-scrapeDict = {y:x for x,y in scrapeDict_1.items()}
-insertDict = {y:x for x,y in insertDict_1.items()}
-updatedDict = {y:x for x,y in updatedDict_1.items()}
+scrapeDict = {y:x for x,y in scrapeDict.items()}
+insertDict = {y:x for x,y in insertDict.items()}
+updatedDict = {y:x for x,y in updatedDict.items()}
 timeDict = {**scrapeDict, **insertDict, **updatedDict}
 i = 1 
 for key  in timeDict:
     timeDict[key] = i*3
     i += 1 
-typeDict = {y:x for x,y in typedict_1.items()}
-domainDict = {y:x for x,y in domaindict_1.items()}
+typeDict = {y:x for x,y in typedict.items()}
+domainDict = {y:x for x,y in domaindict.items()}
 
 df['typeID'] = df.apply(lambda row: typeDict[row['type']],axis = 1)
 df['domainID'] = df.apply(lambda row: domainDict[row['domain']], axis = 1)
 df['scrapedID'] = df.apply(lambda row: timeDict[row['scraped_at']], axis=1)
 df['insertedID'] = df.apply(lambda row: timeDict[row['inserted_at']], axis=1)
+df['updatedID'] = df.apply(lambda row: timeDict[row['updated_at']], axis= 1)
 
-TimeArticle = df[['id','scrapedID', 'insertedID']].copy()
-TimeArticle.to_csv('time_article.cs')
+TimeArticle = df[['id','scrapedID', 'insertedID', 'updatedID']].copy()
+TimeArticle.to_csv('time_article.csv')
 
 domains = pd.DataFrame(list(domainDict.items()), columns = ['Domain', 'ID'])
 domains.to_csv('Domains.csv')

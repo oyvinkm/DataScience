@@ -78,23 +78,25 @@ for i in range(len(df.index)):
             row = {'authorID': authorId, 'articleID': articleId}
             authorIdList.append(row)
 
-
-authorFrame = pd.DataFrame(list(authorDict.items()), columns = ['name', 'authorID'])
-tagFrame = pd.DataFrame(list(tagDict.items()), columns = ['tag', 'tagID'])
+authorDict = {y:x for x,y in authorDict.items()}
+tagDict = {y:x for x,y in tagDict.items()}
+metaDict = {y:x for x,y in metaDict.items()}
+authorFrame = pd.DataFrame(list(authorDict.items()), columns = ['authorID', 'name'])
+tagFrame = pd.DataFrame(list(tagDict.items()), columns = ['tagID', 'tag'])
 keyFrame = pd.DataFrame(list(metaDict.items()), columns = ['meta_keyword', 'meta_keyID'])
-authorFrame.to_csv('author_name.csv')
-tagFrame.to_csv('tag_tag.csv')
-keyFrame.to_csv('key_id_word.csv')
+authorFrame.to_csv('author_name.csv', index=False)
+tagFrame.to_csv('tag_tag.csv', index=False)
+keyFrame.to_csv('key_id_word.csv', index=False)
 
 
 article_tag = pd.DataFrame(articleTagList)
-article_tag.to_csv('article_tag.csv')
+article_tag.to_csv('article_tag.csv', index=False)
 
 article_metaKey = pd.DataFrame(metaKeyList)
-article_metaKey.to_csv('met_key_article.csv')
+article_metaKey.to_csv('met_key_article.csv', index=False)
 
 authorIdFrame = pd.DataFrame(authorIdList)
-authorIdFrame.to_csv('authorID.csv')
+authorIdFrame.to_csv('authorID.csv', index=False)
 
 
 
@@ -125,22 +127,23 @@ df['updatedID'] = df.apply(lambda row: timeDict[row['updated_at']], axis= 1)
 
 Articles = df[['id', 'title','url','content','summary','scrapedID', 'insertedID', 'updatedID', 'meta_description']].copy()
 Articles.rename(columns={"id" : "articleID"}, inplace=True)
-Articles.to_csv('articles.csv')
+Articles.to_csv('articles.csv', index=False)
 
-TimeStamps = pd.DataFrame.from_dict(timeDict, orient='index', columns=['timeID'])
-TimeStamps.to_csv('timestamps.csv')
+timeDict = {y:x for x,y in timeDict.items()}
+TimeStamps = pd.DataFrame(list(timeDict.items()), columns=['timeID', 'timestamp'], )
+TimeStamps.to_csv('timestamps.csv', index=False)
 
-
+typeDict = {y:x for x,y in typeDict.items()}
 types = pd.DataFrame(list(typeDict.items()), columns = ['type', 'typeID'])
-types.to_csv('Types.csv')
+types.to_csv('Types.csv', index=False)
 
-DomainTypes = df[['domain','domainID', 'typeID']].copy()
+DomainTypes = df[['domainID','domain', 'typeID']].copy()
 DomainTypes.drop_duplicates(keep=False, inplace=True)
-DomainTypes.to_csv('domain_types.csv')
+DomainTypes.to_csv('domain_types.csv', index=False)
 
 Domains = df[['id','domainID']].copy()
 Domains.rename(columns={"id":"articleID"}, inplace=True)
-Domains.to_csv('domains.csv')
+Domains.to_csv('domains.csv', index=False)
 
 
 

@@ -7,9 +7,12 @@ allTags = []
 allMeta = []
 allAuthors = []
 for i in range(len(df.index)):
-    line = str(df['tags'].iloc[i]).lower().split(', ')
-    line2 = str(df['meta_keywords'].iloc[i]).lower().split(', ')
-    line3 = str(df['authors'].iloc[i]).lower().split(', ')
+    line = str(df['tags'].iloc[i]).lower()
+    line2 = str(df['meta_keywords'].iloc[i]).lower()
+    line3 = str(df['authors'].iloc[i]).lower()
+    line, line2, line3 = line.replace('[', ''), line2.replace('[', ''), line3.replace('[', '')
+    line, line2, line3 = line.replace(']', ''), line2.replace(']', ''), line3.replace(']', '')
+    line, line2, line3 = line.split(', '), line2.split(', '), line3.split(', ')
     allAuthors.append(line3)
     allMeta.append(line2)
     allTags.append(line)
@@ -44,7 +47,9 @@ for i in range(len(df.index)):
         articleTagList.append(row)
     else:
         article_tags = article_tags.lower().split(', ')
-        for tag in article_tags:        
+        for tag in article_tags:  
+            tag = tag.replace('[', '')
+            tag = tag.replace(']', '')      
             tagId = int(tagDict[tag])
             row = {'tagId': tagId, 'articleId': articleId}
             articleTagList.append(row)
@@ -55,6 +60,8 @@ for i in range(len(df.index)):
     else: 
         meta_keys = meta_keys.lower().split(', ') 
         for keyword in meta_keys:
+            keyword = keyword.replace('[', '')
+            keyword = keyword.replace(']', '')  
             keyID = metaDict[keyword]
             row = {'meta_key_id': keyID, 'articleId': articleId}
             metaKeyList.append(row)
@@ -65,6 +72,8 @@ for i in range(len(df.index)):
     else: 
         author_s = author_s.lower().split(', ') 
         for author in author_s:
+            author = author.replace('[', '')
+            author = author.replace(']', '')  
             authorId = authorDict[author]
             row = {'authorId': authorId, 'articleId': articleId}
             authorIdList.append(row)

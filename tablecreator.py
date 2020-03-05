@@ -43,7 +43,7 @@ for i in range(len(df.index)):
     articleId = df['id'].iloc[i]
     author_s = df['authors'].iloc[i]
     if isinstance(article_tags, float):
-        row = {'tagId': 'NULL', 'articleId': articleId}
+        row = {'tagID': 'NULL', 'articleID': articleId}
         articleTagList.append(row)
     else:
         article_tags = article_tags.lower().split(', ')
@@ -51,11 +51,11 @@ for i in range(len(df.index)):
             tag = tag.replace('[', '')
             tag = tag.replace(']', '')      
             tagId = int(tagDict[tag])
-            row = {'tagId': tagId, 'articleId': articleId}
+            row = {'tagID': tagId, 'articleID': articleId}
             articleTagList.append(row)
 
     if isinstance(meta_keys, float):
-        row = {'meta_key_id': 'NULL', 'articleId': articleId}
+        row = {'meta_keyID': 'NULL', 'articleID': articleId}
         metaKeyList.append(row) 
     else: 
         meta_keys = meta_keys.lower().split(', ') 
@@ -63,11 +63,11 @@ for i in range(len(df.index)):
             keyword = keyword.replace('[', '')
             keyword = keyword.replace(']', '')  
             keyID = metaDict[keyword]
-            row = {'meta_key_id': keyID, 'articleId': articleId}
+            row = {'meta_keyID': keyID, 'articleID': articleId}
             metaKeyList.append(row)
 
     if isinstance(author_s, float):
-        row = {'authorId': 'NULL', 'articleId': articleId}
+        row = {'authorID': 'NULL', 'articleID': articleId}
         authorIdList.append(row) 
     else: 
         author_s = author_s.lower().split(', ') 
@@ -75,13 +75,13 @@ for i in range(len(df.index)):
             author = author.replace('[', '')
             author = author.replace(']', '')  
             authorId = authorDict[author]
-            row = {'authorId': authorId, 'articleId': articleId}
+            row = {'authorID': authorId, 'articleID': articleId}
             authorIdList.append(row)
 
 
-authorFrame = pd.DataFrame(list(authorDict.items()), columns = ['Name', 'AuthorID'])
-tagFrame = pd.DataFrame(list(tagDict.items()), columns = ['Tag', 'TagID'])
-keyFrame = pd.DataFrame(list(metaDict.items()), columns = ['Keyword', 'Meta_keyID'])
+authorFrame = pd.DataFrame(list(authorDict.items()), columns = ['name', 'authorID'])
+tagFrame = pd.DataFrame(list(tagDict.items()), columns = ['tag', 'tagID'])
+keyFrame = pd.DataFrame(list(metaDict.items()), columns = ['meta_keyword', 'meta_keyID'])
 authorFrame.to_csv('author_name.csv')
 tagFrame.to_csv('tag_tag.csv')
 keyFrame.to_csv('key_id_word.csv')
@@ -124,13 +124,14 @@ df['insertedID'] = df.apply(lambda row: timeDict[row['inserted_at']], axis=1)
 df['updatedID'] = df.apply(lambda row: timeDict[row['updated_at']], axis= 1)
 
 Articles = df[['id', 'title','url','content','summary','scrapedID', 'insertedID', 'updatedID', 'meta_description']].copy()
+Articles.rename(columns={"id" : "articleID"}, inplace=True)
 Articles.to_csv('articles.csv')
 
 TimeStamps = pd.DataFrame.from_dict(timeDict, orient='index', columns=['timeID'])
 TimeStamps.to_csv('timestamps.csv')
 
 
-types = pd.DataFrame(list(typeDict.items()), columns = ['Type', 'ID'])
+types = pd.DataFrame(list(typeDict.items()), columns = ['type', 'typeID'])
 types.to_csv('Types.csv')
 
 DomainTypes = df[['domain','domainID', 'typeID']].copy()
@@ -138,6 +139,7 @@ DomainTypes.drop_duplicates(keep=False, inplace=True)
 DomainTypes.to_csv('domain_types.csv')
 
 Domains = df[['id','domainID']].copy()
+Domains.rename(columns={"id":"articleID"}, inplace=True)
 Domains.to_csv('domains.csv')
 
 

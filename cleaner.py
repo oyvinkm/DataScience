@@ -43,9 +43,9 @@ def swapNumb(line):
     line = re.sub(pattern, ' <NUM> ', line)
     return line
 
-def cleaner(csv, size):
+def cleaner(csv, size=10):
     rawData = readData(csv, size)
-    token = TweetTokenizer()
+    #token = TweetTokenizer()
     stringList = []
     for line in rawData['content']:
         line = str(line)

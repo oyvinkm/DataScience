@@ -1,8 +1,13 @@
 import cleaner
 import pandas as pd
-import itertools 
+import itertools
+import parallel_clean
 import numpy as np
-df = cleaner.cleaner('news_sample.csv', 10)
+
+
+df = cleaner.cleaner('news_sample.csv')
+#rawData = cleaner.readData('news_sample.csv', 10)
+#df = parallel_clean.parallelize_dataframe(rawData, cleaner.cleaner)
 allTags = []
 allMeta = []
 allAuthors = []
@@ -100,7 +105,7 @@ authorIdFrame.to_csv('authorID.csv', index=False)
 
 
 
-
+df['type']=df['type'].fillna('NULL')
 typeDict = df.type.drop_duplicates().to_dict()
 domainDict = df.domain.drop_duplicates().to_dict()
 typeDict = {y:x for x,y in typeDict.items()}
@@ -119,8 +124,9 @@ for key  in timeDict:
     timeDict[key] = i*3
     i += 1
 
-df['typeID'] = df.apply(lambda row: typeDict[row['type']],axis = 1)
+
 df['domainID'] = df.apply(lambda row: domainDict[row['domain']], axis = 1)
+df['typeID'] = df.apply(lambda row: typeDict[row['type']], axis= 1)
 df['scrapedID'] = df.apply(lambda row: timeDict[row['scraped_at']], axis=1)
 df['insertedID'] = df.apply(lambda row: timeDict[row['inserted_at']], axis=1)
 df['updatedID'] = df.apply(lambda row: timeDict[row['updated_at']], axis= 1)
@@ -134,7 +140,7 @@ TimeStamps = pd.DataFrame(list(timeDict.items()), columns=['timeID', 'timestamp'
 TimeStamps.to_csv('timestamps.csv', index=False)
 
 typeDict = {y:x for x,y in typeDict.items()}
-types = pd.DataFrame(list(typeDict.items()), columns = ['type', 'typeID'])
+types = pd.DataFrame(list(typeDict.items()), columns = ['typeID', 'type'])
 types.to_csv('Types.csv', index=False)
 
 DomainTypes = df[['domainID','domain', 'typeID']].copy()

@@ -5,7 +5,7 @@ import parallel_clean
 import numpy as np
 
 
-df = cleaner.cleaner('news_sample.csv')
+df = cleaner.readData('1mio-raw.csv', 50000)
 #rawData = cleaner.readData('news_sample.csv', 10)
 #df = parallel_clean.parallelize_dataframe(rawData, cleaner.cleaner)
 allTags = []

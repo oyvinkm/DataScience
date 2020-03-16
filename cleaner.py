@@ -7,14 +7,16 @@ from collections import Counter
 import itertools
 import matplotlib as plt
 import csv
+import parallel_clean
 #Function to read csv
 
 def readData(path, size):
     chunklist = []
-    df_chunk = pd.read_csv(path, sep=',', error_bad_lines=False, index_col=False, 
-        dtype={'id':np.int32}, chunksize = size)
+    df_chunk = pd.read_csv(path, sep=',', error_bad_lines=False, index_col=False, chunksize = size)
     for chunk in df_chunk:
+        parallel_clean.parallelize_dataframe(chunk,cleaner)
         chunklist.append(chunk)
+        print("Chunk cleaned")
     return pd.concat(chunklist)
 
 #Function to find and replace URLs with <URL>
@@ -43,8 +45,8 @@ def swapNumb(line):
     line = re.sub(pattern, ' <NUM> ', line)
     return line
 
-def cleaner(csv, size=10):
-    rawData = readData(csv, size)
+def cleaner(rawData):
+    #rawData = readData(csv, size)
     #token = TweetTokenizer()
     stringList = []
     for line in rawData['content']:

@@ -50,6 +50,13 @@ def cleaner(rawData):
     #rawData = readData(csv, size)
     #token = TweetTokenizer()
     stringList = []
+    tresh = 2000000
+    #Removing rows with wrong articleId
+    for index, row in rawData.iterrows():
+        if row['id'].isdigit():
+            continue
+        else:
+            rawData.drop(index, inplace=True)
     for line in rawData['content']:
         line = str(line)
         line = line.lower()
@@ -69,5 +76,6 @@ def cleaner(rawData):
         else: 
             metaList.append(line)
     rawData['meta_keywords'] = metaList
+    rawData[rawData['id'].apply(lambda x: str(x).isdigit())]
     return rawData
 

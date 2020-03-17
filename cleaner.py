@@ -53,11 +53,20 @@ def cleaner(rawData):
     tresh = 2000000
     #Removing rows with wrong articleId
     for index, row in rawData.iterrows():
-        if row['id'].isdigit():
+        if str(row['id']).isdigit():
             continue
         else:
             rawData.drop(index, inplace=True)
-    for line in rawData['content']:
+    pattern = re.compile(r'\s+')
+    for index, row in rawData.iterrows():
+        row['content'] = row['content'].lower()
+
+        row['content'] = re.sub(pattern, ' ', row['content'])
+        row['content'] = swapUrl(row['content'])
+        row['content'] = swapDates(row['content'])
+        row['content'] = swapNumb(row['content'])
+        #stringList.append(row['content'])
+    """ for line in rawData['content']:
         line = str(line)
         line = line.lower()
         pattern = re.compile(r'\s+')
@@ -68,7 +77,7 @@ def cleaner(rawData):
         line = swapNumb(line)
         stringList.append(line)
         #tokenizedList.append(token.tokenize(line))
-    rawData['content'] = stringList
+    rawData['content'] = stringList """
     metaList = []
     for line in rawData['meta_keywords']:
         if (line ==  "['']"):
@@ -76,6 +85,6 @@ def cleaner(rawData):
         else: 
             metaList.append(line)
     rawData['meta_keywords'] = metaList
-    rawData[rawData['id'].apply(lambda x: str(x).isdigit())]
+    #rawData[rawData['id'].apply(lambda x: str(x).isdigit())]
     return rawData
 

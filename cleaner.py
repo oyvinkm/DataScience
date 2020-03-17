@@ -12,11 +12,12 @@ import parallel_clean
 
 def readData(path, size):
     chunklist = []
-    df_chunk = pd.read_csv(path, sep=',', error_bad_lines=False, index_col=False, chunksize = size)
-    for chunk in df_chunk:
-        parallel_clean.parallelize_dataframe(chunk,cleaner)
+    i= 1
+    for chunk in pd.read_csv(path, sep=',', error_bad_lines=False, index_col=False, chunksize = size):
+        cleaner(chunk)
         chunklist.append(chunk)
-        print("Chunk cleaned")
+        print("Chunk %d cleaned", i)
+        i += 1
     return pd.concat(chunklist)
 
 #Function to find and replace URLs with <URL>

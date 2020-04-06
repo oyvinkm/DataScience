@@ -5,7 +5,7 @@ import parallel_clean
 import numpy as np
 
 
-df = cleaner.readData('1mio-raw.csv', 20000)
+df = cleaner.readData('news_sample.csv', 20000)
 #rawData = cleaner.readData('news_sample.csv', 10)
 #df = parallel_clean.parallelize_dataframe(rawData, cleaner.cleaner)
 allTags = []
@@ -29,20 +29,16 @@ metaList = list(dict.fromkeys(allMeta))
 tagList = list(dict.fromkeys(allTags))
 tagDict = {}
 for i in range (len(tagList)):
-    if isinstance(tagList[i], float):
-        taDict[tagList[i]] = 0
     tagDict[tagList[i]] = i + 1
+tagDict.update({'nan':0})
 metaDict = {}
 for i in range (len(metaList)):
-    if isinstance(metaList[i], float):
-        metaDict[metaList[i]] = 0
     metaDict[metaList[i]] = i + 1
+metaDict.update({'nan':0})
 authorDict = {}
 for i in range (len(authorList)):
-    if isinstance(authorList[i],float):
-        authorDict[authorList[i]] = 0
     authorDict[authorList[i]] = i + 1
-
+authorDict.update({'nan':0})
 
 articleTagList = []
 metaKeyList = []

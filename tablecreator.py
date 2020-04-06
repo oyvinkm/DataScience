@@ -48,7 +48,7 @@ for i in range(len(df.index)):
     articleId = df['id'].iloc[i]
     author_s = df['authors'].iloc[i]
     if isinstance(article_tags, float):
-        row = {'tagID': 'NULL', 'articleID': articleId}
+        row = {'tagID': 0, 'articleID': articleId}
         articleTagList.append(row)
     else:
         article_tags = article_tags.lower().split(', ')
@@ -60,7 +60,7 @@ for i in range(len(df.index)):
             articleTagList.append(row)
 
     if isinstance(meta_keys, float):
-        row = {'meta_keyID': 'NULL', 'articleID': articleId}
+        row = {'meta_keyID': 0, 'articleID': articleId}
         metaKeyList.append(row) 
     else: 
         meta_keys = meta_keys.lower().split(', ') 
@@ -144,7 +144,7 @@ types = pd.DataFrame(list(typeDict.items()), columns = ['typeID', 'type'])
 types.to_csv('Types.csv', index=False)
 
 DomainTypes = df[['domainID','domain', 'typeID']].copy()
-DomainTypes.drop_duplicates(keep=False, inplace=True)
+DomainTypes.drop_duplicates(subset='domainID', inplace=True)
 DomainTypes.to_csv('domain_types.csv', index=False)
 
 Domains = df[['id','domainID']].copy()

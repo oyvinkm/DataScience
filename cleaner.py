@@ -16,7 +16,7 @@ def readData(path, size):
     for chunk in pd.read_csv(path, sep=',', error_bad_lines=False, index_col=False, chunksize = size):
         cleaner(chunk)
         chunklist.append(chunk)
-        print("Chunk %d cleaned", i)
+        print("Chunk cleaned", i)
         i += 1
     return pd.concat(chunklist)
 
@@ -49,8 +49,7 @@ def swapNumb(line):
 def cleaner(rawData):
     #rawData = readData(csv, size)
     #token = TweetTokenizer()
-    stringList = []
-    tresh = 2000000
+    #stringList = []
     #Removing rows with wrong articleId
     for index, row in rawData.iterrows():
         if str(row['id']).isdigit():

@@ -29,13 +29,19 @@ metaList = list(dict.fromkeys(allMeta))
 tagList = list(dict.fromkeys(allTags))
 tagDict = {}
 for i in range (len(tagList)):
-    tagDict[tagList[i]] = i
+    if isinstance(tagList[i], float):
+        taDict[tagList[i]] = 0
+    tagDict[tagList[i]] = i + 1
 metaDict = {}
 for i in range (len(metaList)):
-    metaDict[metaList[i]] = i
+    if isinstance(metaList[i], float):
+        metaDict[metaList[i]] = 0
+    metaDict[metaList[i]] = i + 1
 authorDict = {}
 for i in range (len(authorList)):
-    authorDict[authorList[i]] = i
+    if isinstance(authorList[i],float):
+        authorDict[authorList[i]] = 0
+    authorDict[authorList[i]] = i + 1
 
 
 articleTagList = []
@@ -72,7 +78,7 @@ for i in range(len(df.index)):
             metaKeyList.append(row)
 
     if isinstance(author_s, float):
-        row = {'authorID': 'NULL', 'articleID': articleId}
+        row = {'authorID': 0, 'articleID': articleId}
         authorIdList.append(row) 
     else: 
         author_s = author_s.lower().split(', ') 
@@ -88,7 +94,7 @@ tagDict = {y:x for x,y in tagDict.items()}
 metaDict = {y:x for x,y in metaDict.items()}
 authorFrame = pd.DataFrame(list(authorDict.items()), columns = ['authorID', 'name'])
 tagFrame = pd.DataFrame(list(tagDict.items()), columns = ['tagID', 'tag'])
-keyFrame = pd.DataFrame(list(metaDict.items()), columns = ['meta_keyword', 'meta_keyID'])
+keyFrame = pd.DataFrame(list(metaDict.items()), columns = ['meta_keyID', 'meta_keyword'])
 authorFrame.to_csv('author_name.csv', index=False)
 tagFrame.to_csv('tag_tag.csv', index=False)
 keyFrame.to_csv('key_id_word.csv', index=False)

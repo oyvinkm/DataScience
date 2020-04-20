@@ -25,7 +25,7 @@ class WikiSpider(scrapy.Spider):
         url = response.url
         title = response.xpath('//*[@id="firstHeading"]/text()').get()
         date = response.xpath('/html/body/div[3]/div[3]/div[4]/div/p[1]/strong/text()').get()
-        raw_text = response.xpath('/html/body/div[3]/div[3]/div[4]/div/p/descendant::text()').extract() 
+        raw_text = response.xpath('/html/body/div[3]/div[3]/div[4]/div/p').extract() 
         yield {
                 "url" : url,
                 "title": title,

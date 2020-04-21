@@ -1,8 +1,6 @@
 import numpy as np
 import pandas as pd 
 import re
-import nltk
-from nltk.tokenize import TweetTokenizer, ToktokTokenizer
 from collections import Counter 
 import itertools
 import matplotlib as plt
@@ -42,16 +40,16 @@ def swapNumb(line):
 
 def cleaner(rawData):
     pattern = re.compile(r'\s+')
-    pattern2 = re.compile('/\n,?')
+    pattern2 = re.compile(r'^,+')
     for index, row in rawData.iterrows():
         row['content'] = strip_markup(str(row['content']))
         row['content'] = re.sub(pattern2, '', row['content'])
-        #row['content'] = row['content'].lower()
-        #row['content'] = re.sub(pattern, ' ', row['content'])
-        #row['content'] = swapUrl(row['content'])
-        #row['content'] = swapDates(row['content'])
-        #row['content'] = swapNumb(row['content'])
+        row['content'] = row['content'].lower()
+        row['content'] = re.sub(pattern, ' ', row['content'])
+        row['content'] = swapUrl(row['content'])
+        row['content'] = swapDates(row['content'])
+        row['content'] = swapNumb(row['content'])
 
-data = readData('filebla.csv')
+data = readData('rawArticles.csv')
 cleaner(data)
-print(data['content'].iloc[24])
+data.to_csv('Articles_Politics_Conflict.csv')

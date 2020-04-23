@@ -50,6 +50,6 @@ def cleaner(rawData):
         row['content'] = swapDates(row['content'])
         row['content'] = swapNumb(row['content'])
 
-data = readData('rawArticles.csv')
+data = readData('filebla.csv')
 cleaner(data)
 data.to_csv('Articles_Politics_Conflict.csv')

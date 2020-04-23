@@ -1,0 +1,25 @@
+With fakeID as (SELECT typeID FROM Typer WHERE typen='fake'), 
+fakeDomains as (SELECT domainID FROM domains WHERE typeID = (SELECT * FROM fakeID)), 
+noAuthorID as (SELECT authorID FROM authors WHERE author_name = 'nan'),
+fakeArticles as (SELECT articleID FROM articleDomains WHERE domainID IN (SELECT * from fakeDomains))
+SELECT count(fakeArticles.articleID), count(writers.articleID)
+FROM fakeArticles, writers
+where writers.authorID = (SELECT * FROM noAuthorID);
+
+WITH reliableID as (SELECT typeID FROM Typer WHERE typen='reliable'),
+reliableDomains as (SELECT domainID FROM Domains WHERE typeID = (SELECT * from reliableID)),
+reliableCount as (SELECT domainID, count(articleID) as count FROM articleDomains WHERE domainID IN (SELECT * FROM reliableDomains) GROUP BY domainID),
+reliableIDMax as (SELECT domainID, count FROM reliableCount WHERE count = (SELECT MAX(count) FROM reliableCount))
+SELECT domainet
+from domains
+where domainID = (SELECT domainID FROM reliableIDMax);
+
+
+With fakeID as (SELECT typeID FROM Typer WHERE typen='fake'), 
+fakeDomains as (SELECT domainID FROM domains WHERE typeID = (SELECT * FROM fakeID)), 
+fakeArticles as (SELECT articleID FROM articleDomains WHERE domainID IN (SELECT * from fakeDomains)),
+tagCount as (SELECT count(articleID), tagID FROM articleTags WHERE tagID > 0 AND articleID IN (SELECT * FROM fakeArticles) GROUP BY tagID),
+tagCountMax as (SELECT tagID, count FROM tagCount WHERE count = (SELECT MAX(count) FROM tagCount))
+SELECT tag
+FROM tags
+WHERE tagID = (SELECT tagID from tagCountMAX);

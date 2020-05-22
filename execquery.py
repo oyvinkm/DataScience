@@ -22,6 +22,3 @@ def execQuery(query):
             connection.close()
             print("Executed query and closed connection.")
 
-result = execQuery("""SELECT article.content
-                      FROM article
-                      LIMIT 10;""")

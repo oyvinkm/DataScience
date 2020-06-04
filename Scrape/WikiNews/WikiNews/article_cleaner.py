@@ -6,6 +6,13 @@ import itertools
 import matplotlib as plt
 import csv
 from htmllaundry import strip_markup
+#import execquery
+import sklearn.feature_extraction.text as sk
+from sklearn import svm
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.naive_bayes import GaussianNB
+from sklearn.ensemble import VotingClassifier
+import os
 #Function to read csv
 
 def readData(path):
@@ -27,7 +34,7 @@ re5 = re.compile(r'[\d]{1,2}/[\d]{1,2}/[\d]{2,4}')
 re6 = re.compile(r'[\d]{1,2} [\d]{1,2} [\d]{2,4}')
 re7 = re.compile(r'[\d].{1,2}.[\d]{1,2}.[\d]{2,4}')
 re8 = re.compile(r'[mtwfs]\w*[,]? [adfjmnos]\w*[,]?[.]? [\d]{1,2}(th)?[,]? ([\d]{2,4})?')
-finReg = [re1, re2, re3, re4, re5, re6, re7]
+finReg = [re8, re1, re2, re3, re4, re5, re6, re7]
 def swapDates(line):
     for reg in finReg:
         line = re.sub(reg, ' <DATE> ', line)
@@ -38,6 +45,19 @@ pattern = r'[\d]+[,]?([\d]+)?'
 def swapNumb(line):
     line = re.sub(pattern, ' <NUM> ', line)
     return line
+def tdif(data):
+    tagList = []
+    tfidf = sk.TfidfVectorizer(max_features=len(data), use_idf=True)
+    X = tfidf.fit_transform(data['content']).toarray()
+    feature_names = np.array(tfidf.get_feature_names())
+    for i in range(len(data.index)):
+        responses = tfidf.transform([data['content'].iloc[i]])
+        def get_top_tf_idf_words(response, top_n=2):
+            sorted_nzs = np.argsort(response.data)[:-(top_n+1):-1]
+            return feature_names[response.indices[sorted_nzs]]
+        tagList.append(get_top_tf_idf_words(responses, 5))
+    return tagList
+    
 
 def cleaner(rawData):
     pattern = re.compile(r'\s+')
@@ -50,7 +70,18 @@ def cleaner(rawData):
         row['content'] = swapUrl(row['content'])
         row['content'] = swapDates(row['content'])
         row['content'] = swapNumb(row['content'])
-
+    listofTags = tdif(rawData)
+    for lists in listofTags:
+        for item in lists:
+            item = item.replace('[', '')
+            item = item.replace(']', '')
+            item = item.replace('the', '')
+    map(''.join, listofTags)
+    rawData['tags'] = listofTags
+parentPath = os.path.dirname(os.getcwd())
+os.chdir(parentPath)
 data = readData('filebla.csv')
 cleaner(data)
+
+
 data.to_csv('Articles_Politics_Conflict.csv')

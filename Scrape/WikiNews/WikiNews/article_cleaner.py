@@ -26,6 +26,7 @@ re4 = re.compile(r'[\d]{1,2}-[\d]{1,2}-[\d]{2,4}')
 re5 = re.compile(r'[\d]{1,2}/[\d]{1,2}/[\d]{2,4}')
 re6 = re.compile(r'[\d]{1,2} [\d]{1,2} [\d]{2,4}')
 re7 = re.compile(r'[\d].{1,2}.[\d]{1,2}.[\d]{2,4}')
+re8 = re.compile(r'[mtwfs]\w*[,]? [adfjmnos]\w*[,]?[.]? [\d]{1,2}(th)?[,]? ([\d]{2,4})?')
 finReg = [re1, re2, re3, re4, re5, re6, re7]
 def swapDates(line):
     for reg in finReg:

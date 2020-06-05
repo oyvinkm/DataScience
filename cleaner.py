@@ -1,13 +1,6 @@
 import numpy as np
 import pandas as pd 
 import re
-import nltk
-from nltk.tokenize import TweetTokenizer, ToktokTokenizer
-from collections import Counter 
-import itertools
-import matplotlib as plt
-import csv
-import parallel_clean
 #Function to read csv
 
 def readData(path, size):

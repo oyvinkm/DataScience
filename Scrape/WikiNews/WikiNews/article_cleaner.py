@@ -1,17 +1,9 @@
 import numpy as np
 import pandas as pd 
 import re
-from collections import Counter 
-import itertools
-import matplotlib as plt
-import csv
 from htmllaundry import strip_markup
 #import execquery
 import sklearn.feature_extraction.text as sk
-from sklearn import svm
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.naive_bayes import GaussianNB
-from sklearn.ensemble import VotingClassifier
 import os
 #Function to read csv
 
@@ -48,7 +40,7 @@ def swapNumb(line):
 def tdif(data):
     tagList = []
     tfidf = sk.TfidfVectorizer(max_features=len(data), use_idf=True)
-    X = tfidf.fit_transform(data['content']).toarray()
+    tfidf.fit_transform(data['content']).toarray()
     feature_names = np.array(tfidf.get_feature_names())
     for i in range(len(data.index)):
         responses = tfidf.transform([data['content'].iloc[i]])
@@ -78,6 +70,7 @@ def cleaner(rawData):
             item = item.replace('the', '')
     map(''.join, listofTags)
     rawData['tags'] = listofTags
+
 parentPath = os.path.dirname(os.getcwd())
 os.chdir(parentPath)
 data = readData('filebla.csv')

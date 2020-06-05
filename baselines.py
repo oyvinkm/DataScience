@@ -6,8 +6,8 @@ from sklearn.tree import DecisionTreeClassifier
 import sklearn.feature_extraction.text as sk
 
 def baseline_performance(trainData, testData):
-    vectorizer1 = sk.TfidfVectorizer(max_features=6000)
-    X = vectorizer1.fit_transform(trainData["content"]).toarray()
+    vectorizer = sk.TfidfVectorizer(max_features=6000)
+    X = vectorizer.fit_transform(trainData["content"]).toarray()
     Y = list(trainData["type"])
     
     clf_svm = svm.SVC(kernel='linear', class_weight='balanced', gamma='auto', probability=True)
@@ -19,8 +19,7 @@ def baseline_performance(trainData, testData):
     clf_decisionTreee = DecisionTreeClassifier()
     clf_decisionTreee.fit(X,Y)
 
-    vectorizer2 = sk.TfidfVectorizer(max_features=6000)
-    test_content = vectorizer2.fit_transform(testData["content"]).toarray()
+    test_content = vectorizer.transform(testData["content"]).toarray()
     real_types = list(testData["type"])
 
     Y1 = clf_svm.predict(test_content)

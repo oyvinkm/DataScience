@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd 
 import re
+import itertools
 from htmllaundry import strip_markup
 #import execquery
 import sklearn.feature_extraction.text as sk
@@ -70,11 +71,59 @@ def cleaner(rawData):
             item = item.replace('the', '')
     map(''.join, listofTags)
     rawData['tags'] = listofTags
+    print(len(rawData.index))
+    print(len(range(1,len(rawData.index))))
+    rawData.insert(0, "id", range(1,len(rawData.content)+1))
+
+
+def tableCreator(df):
+    allTags = []
+    for i in range(len(df.index)):
+        line = str(df['tags'].iloc[i]).lower()
+        line = line.replace("[", "")
+        line = line.replace("]", '')
+        line = line.replace("'", "")
+        line = line.split(" ")
+        allTags.append(line)
+    allTags = (list(itertools.chain.from_iterable(allTags)))
+    tagList = list(dict.fromkeys(allTags))
+    tagDict = {}
+    for i in range (len(tagList)):
+        tagDict[tagList[i]] = i + 1
+    tagDict.update({'nan':0})
+    articleTagList = []
+
+    for i in range(len(df.index)):
+        article_tags = str(df['tags'].iloc[i])
+        articleId = df['id'].iloc[i]
+        if isinstance(article_tags, float):
+            row = {'tagID': 0, 'articleID': articleId}
+            articleTagList.append(row)
+        else:
+            article_tags = article_tags.lower().split(' ')
+            for tag in article_tags:  
+                tag = tag.replace('[', '')
+                tag = tag.replace(']', '')
+                tag = tag.replace("'", "")      
+                tagId = int(tagDict[tag])
+                row = {'tagID': tagId, 'articleID': articleId}
+                articleTagList.append(row)
+    tagDict = {y:x for x,y in tagDict.items()}
+    tagFrame = pd.DataFrame(list(tagDict.items()), columns = ['tagID', 'tag'])
+    tagFrame.to_csv('scraped_tags.csv', index=False)
+    article_tag = pd.DataFrame(articleTagList)
+    article_tag.to_csv('scraped_article_tags.csv', index=False)
+    for col in df.columns:
+        print(col)
+    articles = df[['id', 'url', 'title', 'date', 'content']].copy()
+    articles.rename(columns={"id" : "articleID"}, inplace=True)
+    articles.to_csv('articles.csv', index=False)
+
 
 parentPath = os.path.dirname(os.getcwd())
 os.chdir(parentPath)
 data = readData('filebla.csv')
 cleaner(data)
+tableCreator(data)
 
-
-data.to_csv('Articles_Politics_Conflict.csv')
+#data.to_csv('Articles_Politics_Conflict.csv')

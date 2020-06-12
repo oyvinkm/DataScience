@@ -74,6 +74,7 @@ def cleaner(rawData):
     print(len(rawData.index))
     print(len(range(1,len(rawData.index))))
     rawData.insert(0, "id", range(1,len(rawData.content)+1))
+    rawData['type'] = "reliable"
 
 
 def tableCreator(df):
@@ -115,7 +116,7 @@ def tableCreator(df):
     article_tag.to_csv('scraped_article_tags.csv', index=False)
     for col in df.columns:
         print(col)
-    articles = df[['id', 'url', 'title', 'date', 'content']].copy()
+    articles = df[['id', 'url', 'title', 'date', 'content', 'type']].copy()
     articles.rename(columns={"id" : "articleID"}, inplace=True)
     articles.to_csv('articles.csv', index=False)
 

@@ -1,0 +1,99 @@
+CREATE TABLE Timestamps(
+	timeID BIGINT NOT NULL PRIMARY KEY,
+	timstamp TEXT);
+	
+CREATE TABLE Typer(
+	typeID BIGINT NOT NULL PRIMARY KEY,
+	typen TEXT);
+
+CREATE TABLE Domains(
+	domainID BIGINT NOT NULL PRIMARY KEY,
+	domainet TEXT,
+	typeID BIGINT,
+	FOREIGN KEY(typeID) REFERENCES Typer);
+
+CREATE TABLE Articles(
+	articleID BIGINT,
+	title TEXT,
+	url TEXT,
+	contents TEXT,
+	summary TEXT,
+	meta_description TEXT,
+	scrapedID BIGINT,
+	insertedID BIGINT,
+	updatedID BIGINT,
+	PRIMARY KEY (articleID),
+	FOREIGN KEY(scrapedID) REFERENCES Timestamps,
+	FOREIGN KEY(insertedID) REFERENCES Timestamps,
+	FOREIGN KEY (updatedID) REFERENCES Timestamps);
+
+CREATE TABLE ArticleDomains(
+	domainID BIGINT,
+	articleID BIGINT,
+	FOREIGN KEY(domainID) REFERENCES Domains,
+	FOREIGN KEY(articleID) REFERENCES Articles);
+
+CREATE TABLE Authors(
+	authorID BIGINT,
+	author_name TEXT,
+	PRIMARY KEY(authorID));
+
+CREATE TABLE Writers(
+	articleID BIGINT,
+	authorID BIGINT,
+	FOREIGN KEY(articleID) REFERENCES Articles,
+	FOREIGN KEY(authorID) REFERENCES Authors);
+
+CREATE TABLE Tags(
+	tagID BIGINT,
+	tag TEXT,
+	PRIMARY KEY(tagID));
+
+CREATE TABLE ArticleTags(
+	articleID BIGINT,
+	tagID BIGINT,
+	FOREIGN KEY(articleID) REFERENCES Articles,
+	FOREIGN KEY(tagID) REFERENCES Tags);
+
+CREATE TABLE Meta_keywords(
+	meta_keywordID BIGINT,
+	meta_keyword TEXT,
+	PRIMARY KEY (meta_keywordID));
+	
+CREATE TABLE ArticleMeta_keywords(
+	articleID BIGINT,
+	meta_keywordID BIGINT,
+	FOREIGN KEY(articleID) REFERENCES Articles,
+	FOREIGN KEY(meta_keywordID) REFERENCES Meta_keywords);
+
+
+
+COPY Authors(authorID,author_name) FROM '/home/marcus/Documents/DA_4.sem/DataScience/DataScience/author_name.csv' DELIMITER ',' CSV HEADER;
+
+COPY Typer(typeID,typen) FROM '/home/marcus/Documents/DA_4.sem/DataScience/DataScience/Types.csv' DELIMITER ',' CSV HEADER;
+
+COPY Domains(domainID,domainet, typeid) FROM '/home/marcus/Documents/DA_4.sem/DataScience/DataScience/domain_types.csv' DELIMITER ',' CSV HEADER;
+
+COPY Meta_keywords(meta_keywordID,meta_keyword) FROM '/home/marcus/Documents/DA_4.sem/DataScience/DataScience/key_id_word.csv' DELIMITER ',' CSV HEADER;
+
+COPY Tags(tagID,tag) FROM '/home/marcus/Documents/DA_4.sem/DataScience/DataScience/tag_tag.csv' DELIMITER ',' CSV HEADER;
+
+COPY Timestamps(timeID,timstamp) FROM '/home/marcus/Documents/DA_4.sem/DataScience/DataScience/timestamps.csv' DELIMITER ',' CSV HEADER;
+
+COPY Articles(articleID,title,url,contents,summary,scrapedID,insertedID,updatedID,meta_description) FROM '/home/marcus/Documents/DA_4.sem/DataScience/DataScience/articles.csv' DELIMITER ',' CSV HEADER;
+
+COPY articledomains(articleID,domainID) FROM '/home/marcus/Documents/DA_4.sem/DataScience/DataScience/domains.csv' DELIMITER ',' CSV HEADER;
+
+COPY articlemeta_keywords(articleID,meta_keywordID) FROM '/home/marcus/Documents/DA_4.sem/DataScience/DataScience/met_key_article.csv' DELIMITER ',' CSV HEADER;
+
+COPY articleTags(articleID,tagID) FROM '/home/marcus/Documents/DA_4.sem/DataScience/DataScience/article_tag.csv' DELIMITER ',' CSV HEADER;
+
+COPY writers(articleID,authorID) FROM '/home/marcus/Documents/DA_4.sem/DataScience/DataScience/authorID.csv' DELIMITER ',' CSV HEADER;
+
+
+
+
+
+COPY "WikiNews".articles(articleID,url,title,date,content,type) FROM '/home/marcus/Documents/DA_4.sem/DataScience/DataScience/Scrape/WikiNews/articles.csv' DELIMITER ',' CSV HEADER;
+COPY "WikiNews".tags(tagID,tag) FROM '/home/marcus/Documents/DA_4.sem/DataScience/DataScience/Scrape/WikiNews/scraped_tags.csv' DELIMITER ',' CSV HEADER;
+COPY "WikiNews".articleTags(articleID,tagID) FROM '/home/marcus/Documents/DA_4.sem/DataScience/DataScience/Scrape/WikiNews/scraped_article_tags.csv' DELIMITER ',' CSV HEADER;
